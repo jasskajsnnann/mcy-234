@@ -114,7 +114,7 @@ def app():
     url_input = st.text_input("请输入一个网址获取文本内容：")
     chart_type = st.sidebar.selectbox(
         '选择图表类型',
-        ['词云', '条形图', '折线图', '饼图', '散点图', '面积图']
+        ['词云', '条形图', '折线图', '饼图', '散点图', '面积图', '词频条形图']
     )
     min_freq = st.sidebar.slider("设置最小词频", 1, 200, 100)
     stopwords_file = "stopwords.txt"  # 停用词文件路径
@@ -127,8 +127,7 @@ def app():
             clean_text = remove_non_chinese(clean_text)
             word_counts = calculate_word_frequency(clean_text, stopwords)
             filtered_word_counts = {word: count for word, count in word_counts.items() if count >= min_freq}
-            word_freq_df = pd.DataFrame(filtered_word_counts.items(), columns=["词语", "词频"]).sort_values(by="词频",
-                                                                                                            ascending=False)
+            word_freq_df = pd.DataFrame(list(filtered_word_counts.items()), columns=["词语", "词频"]).sort_values(by="词频", ascending=False).reset_index(drop=True)
 
             # 显示词频排名前20的词汇
             st.subheader("词频排名前20的词汇：")
@@ -136,7 +135,7 @@ def app():
 
             # 根据用户选择的图表类型生成图表
             if chart_type == '词云':
-                chart = generate_pyecharts_wordcloud(word_counts)
+                chart = generate_pyecharts_wordcloud(filtered_word_counts)
             elif chart_type == '条形图':
                 chart = plot_bar_chart(word_freq_df)
             elif chart_type == '折线图':
@@ -147,13 +146,15 @@ def app():
                 chart = plot_scatter_chart(word_freq_df)
             elif chart_type == '面积图':
                 chart = plot_area_chart(word_freq_df)
+            elif chart_type == '词频条形图':
+                # 这里我们可以直接使用 plot_bar_chart 函数，因为我们已经有了一个条形图的实现
+                chart = plot_bar_chart(word_freq_df.head(20))  # 只显示前20个词汇
 
             # 显示选定的图表
             st.subheader(f"{chart_type}:")
             components.html(chart, height=600)
         else:
             st.error("未能从该网址获取到有效的文本内容，请检查网址是否有效。")
-
 
 if __name__ == "__main__":
     app()
