@@ -90,7 +90,7 @@ def plot_area_chart(word_freq_df):
     area.set_global_opts(title_opts=opts.TitleOpts(title="词频面积图"))
     return area.render_embed()
 
-# 12. 创建词频折线图（已存在，但你希望用它来替代漏斗图）
+# 12. 创建词频折线图
 def plot_line_chart_v2(word_freq_df):
     line = Line()
     line.add_xaxis(word_freq_df['词语'].tolist())
