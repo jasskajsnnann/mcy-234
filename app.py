@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import streamlit as st
 import jieba
 import requests
@@ -6,6 +7,7 @@ from collections import Counter
 import re
 import pandas as pd
 from pyecharts.charts import WordCloud, Bar, Line, Pie, Scatter, Funnel
+import seaborn as sns
 from pyecharts import options as opts
 import streamlit.components.v1 as components
 
